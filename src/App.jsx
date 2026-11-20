@@ -1,122 +1,58 @@
 import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
 import './App.css'
 
-function App() {
-  const [count, setCount] = useState(0)
+// Author: Malaika Khan
+// Based on my earlier "Random Color Generator" project, rewritten as a React component.
 
-  return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+const COUNT = 24
 
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+function randomHex() {
+  const chars = '0123456789ABCDEF'
+  let code = '#'
+  for (let i = 0; i < 6; i++) {
+    code += chars[Math.floor(Math.random() * 16)]
+  }
+  return code
 }
 
-export default App
+function makeColors() {
+  return Array.from({ length: COUNT }, randomHex)
+}
+
+export default function App() {
+  const [colors, setColors] = useState(makeColors)
+  const [copied, setCopied] = useState('')
+
+  async function copyColor(hex) {
+    try {
+      await navigator.clipboard.writeText(hex)
+      setCopied(hex)
+      setTimeout(() => setCopied(''), 1500)
+    } catch (err) {
+      console.error('Copy failed', err)
+    }
+  }
+
+  return (
+    <main className="page">
+      <header className="top">
+        <h1>Photo Palette Gallery</h1>
+        <p>Generate colors, copy the ones you like.</p>
+        <button className="primary" onClick={() => setColors(makeColors())}>
+          Generate new colors
+        </button>
+      </header>
+
+      <section className="grid" aria-label="Color swatches">
+        {colors.map((hex, i) => (
+          <article className="swatch" key={i} style={{ backgroundColor: hex }}>
+            <span className="hex">{hex}</span>
+            <button onClick={() => copyColor(hex)}>
+              {copied === hex ? 'Copied' : 'Copy'}
+            </button>
+          </article>
+        ))}
+      </section>
+    </main>
+  )
+}
