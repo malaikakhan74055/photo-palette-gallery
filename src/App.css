@@ -66,3 +66,13 @@ button:focus-visible {
   padding: 12px 24px;
   font-size: 1rem;
 }
+
+.bar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  font-size: 0.9rem;
+  color: #555;
+}
