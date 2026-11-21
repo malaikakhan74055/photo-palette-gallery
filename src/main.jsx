@@ -6,13 +6,19 @@ import '@aws-amplify/ui-react/styles.css'
 import outputs from '../amplify_outputs.json'
 import './index.css'
 import App from './App.jsx'
+import Photos from './Photos.jsx'
 
 Amplify.configure(outputs)
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <Authenticator socialProviders={['google']}>
-      {({ signOut }) => <App signOut={signOut} />}
+      {({ signOut }) => (
+        <>
+          <App signOut={signOut} />
+          <Photos />
+        </>
+      )}
     </Authenticator>
   </StrictMode>,
 )
