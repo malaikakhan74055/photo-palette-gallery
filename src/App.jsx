@@ -132,7 +132,12 @@ export default function App({ signOut }) {
             <strong>{p.name}</strong>
             <div className="chips">
               {(p.colors || []).map((c, i) => (
-                <span key={i} className="chip" style={{ backgroundColor: c }} title={c} />
+                <span
+                  key={i}
+                  className="chip"
+                  style={{ backgroundColor: c }}
+                  title={c}
+                />
               ))}
             </div>
             <button onClick={() => deletePalette(p.id)}>Delete</button>

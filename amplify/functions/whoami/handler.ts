@@ -1,9 +1,9 @@
-import type { APIGatewayProxyHandler } from 'aws-lambda';
+import type { APIGatewayProxyHandler } from 'aws-lambda'
 
 // Returns who is calling, based on the Cognito token checked by API Gateway.
 export const handler: APIGatewayProxyHandler = async (event) => {
-  const claims = event.requestContext.authorizer?.claims ?? {};
-  console.log('whoami called by:', claims.email);
+  const claims = event.requestContext.authorizer?.claims ?? {}
+  console.log('whoami called by:', claims.email)
   return {
     statusCode: 200,
     headers: {
@@ -16,5 +16,5 @@ export const handler: APIGatewayProxyHandler = async (event) => {
       groups: claims['cognito:groups'] ?? null,
       time: new Date().toISOString(),
     }),
-  };
-};
+  }
+}

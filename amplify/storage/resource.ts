@@ -1,4 +1,4 @@
-import { defineStorage } from '@aws-amplify/backend';
+import { defineStorage } from '@aws-amplify/backend'
 
 export const storage = defineStorage({
   name: 'photoPaletteStorage',
@@ -9,4 +9,4 @@ export const storage = defineStorage({
       allow.groups(['Admins']).to(['read', 'write', 'delete']),
     ],
   }),
-});
+})
