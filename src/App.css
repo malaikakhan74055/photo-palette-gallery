@@ -76,3 +76,41 @@ button:focus-visible {
   font-size: 0.9rem;
   color: #555;
 }
+
+.save {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin: 28px 0;
+}
+
+.save input {
+  font: inherit;
+  padding: 10px 12px;
+  border: 2px solid #1b1b1b;
+  border-radius: 6px;
+  min-width: 220px;
+}
+
+.saved {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.chip {
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  border: 1px solid #1b1b1b;
+}

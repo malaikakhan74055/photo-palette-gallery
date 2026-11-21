@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react'
 import { fetchAuthSession } from 'aws-amplify/auth'
+import { generateClient } from 'aws-amplify/data'
 import './App.css'
 
 // Color-box idea based on my earlier "Random Color Generator" project.
 // Author: Malaika Khan
 
-const COUNT = 24
+const COUNT = 12
+const client = generateClient()
 
 function randomHex() {
   const chars = '0123456789ABCDEF'
@@ -24,6 +26,9 @@ export default function App({ signOut }) {
   const [colors, setColors] = useState(makeColors)
   const [copied, setCopied] = useState('')
   const [groups, setGroups] = useState([])
+  const [name, setName] = useState('')
+  const [saved, setSaved] = useState([])
+  const [message, setMessage] = useState('')
 
   useEffect(() => {
     fetchAuthSession()
@@ -32,6 +37,17 @@ export default function App({ signOut }) {
         setGroups(Array.isArray(g) ? g : [])
       })
       .catch(() => setGroups([]))
+  }, [])
+
+  useEffect(() => {
+    const sub = client.models.Palette.observeQuery().subscribe({
+      next: ({ items }) => setSaved([...items]),
+      error: (err) => {
+        console.error(err)
+        setMessage('Could not load saved palettes')
+      },
+    })
+    return () => sub.unsubscribe()
   }, [])
 
   async function copyColor(hex) {
@@ -44,6 +60,30 @@ export default function App({ signOut }) {
     }
   }
 
+  async function savePalette() {
+    try {
+      const { errors } = await client.models.Palette.create({
+        name: name.trim() || 'Untitled palette',
+        colors,
+      })
+      if (errors) throw new Error(errors[0].message)
+      setName('')
+      setMessage('Palette saved')
+    } catch (err) {
+      console.error(err)
+      setMessage('Could not save palette')
+    }
+  }
+
+  async function deletePalette(id) {
+    try {
+      await client.models.Palette.delete({ id })
+    } catch (err) {
+      console.error(err)
+      setMessage('Could not delete palette')
+    }
+  }
+
   return (
     <main className="page">
       <div className="bar">
@@ -53,7 +93,7 @@ export default function App({ signOut }) {
 
       <header className="top">
         <h1>Photo Palette Gallery</h1>
-        <p>Generate colors, copy the ones you like.</p>
+        <p>Generate colors, copy the ones you like, save a palette.</p>
         <button className="primary" onClick={() => setColors(makeColors())}>
           Generate new colors
         </button>
@@ -67,6 +107,36 @@ export default function App({ signOut }) {
               {copied === hex ? 'Copied' : 'Copy'}
             </button>
           </article>
+        ))}
+      </section>
+
+      <section className="save">
+        <input
+          type="text"
+          placeholder="Palette name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          aria-label="Palette name"
+        />
+        <button className="primary" onClick={savePalette}>
+          Save this palette
+        </button>
+        <span role="status">{message}</span>
+      </section>
+
+      <section aria-label="Saved palettes">
+        <h2>Saved palettes</h2>
+        {saved.length === 0 && <p>No saved palettes yet.</p>}
+        {saved.map((p) => (
+          <div className="saved" key={p.id}>
+            <strong>{p.name}</strong>
+            <div className="chips">
+              {(p.colors || []).map((c, i) => (
+                <span key={i} className="chip" style={{ backgroundColor: c }} title={c} />
+              ))}
+            </div>
+            <button onClick={() => deletePalette(p.id)}>Delete</button>
+          </div>
         ))}
       </section>
     </main>
