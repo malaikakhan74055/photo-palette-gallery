@@ -143,3 +143,16 @@ button:focus-visible {
   font-size: 0.85rem;
   word-break: break-all;
 }
+
+.rest {
+  padding-top: 0;
+}
+
+.rest pre {
+  background: #1b2a33;
+  color: #e8f1f5;
+  padding: 12px;
+  border-radius: 6px;
+  overflow-x: auto;
+  min-height: 24px;
+}

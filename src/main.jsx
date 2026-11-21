@@ -7,8 +7,17 @@ import outputs from '../amplify_outputs.json'
 import './index.css'
 import App from './App.jsx'
 import Photos from './Photos.jsx'
+import RestCheck from './RestCheck.jsx'
 
 Amplify.configure(outputs)
+const existingConfig = Amplify.getConfig()
+Amplify.configure({
+  ...existingConfig,
+  API: {
+    ...existingConfig.API,
+    REST: outputs.custom.API,
+  },
+})
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -17,6 +26,7 @@ createRoot(document.getElementById('root')).render(
         <>
           <App signOut={signOut} />
           <Photos />
+          <RestCheck />
         </>
       )}
     </Authenticator>
